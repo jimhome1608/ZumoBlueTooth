@@ -444,14 +444,17 @@ public class ZumoBlueTooth extends BlunoLibrary
                 serialReceivedText.setText("");
             String strMessage = new String();
             strMessage = strReadData.substring(0,_Pos);
-            if (isNumeric(strMessage) ==true) {
-                double d =  Double.parseDouble(strMessage);
-                int _red = 255- scale(d,0,2000,0,255);
-                int _color = Color.argb(255,_red,0,0);
-                for (int i=0;i<=5;i++)
-                    iv[i].setBackgroundColor(_color);
-            }
+            Log.d("DATA",strMessage);
             serialReceivedText.setText(strMessage+"\n"+serialReceivedText.getText());
+            String[] separated = strMessage.split(",");
+            for (int i=0; i<separated.length;i++ ) {
+                if (isNumeric(separated[i])) {
+                    double d =  Double.parseDouble(separated[i]);
+                    int _red = 255- scale(d,0,2000,0,255);
+                    int _color = Color.argb(255,_red,0,0);
+                    iv[i].setBackgroundColor(_color);
+                }
+            }
             strReadData = "";
             if (strMessage.indexOf('z') >=0) {
                 btnLeftBackward.setChecked(false);
@@ -462,7 +465,7 @@ public class ZumoBlueTooth extends BlunoLibrary
                 btnBackward.setChecked(false);
                 if (AlreadyDone == 0) {
                     AlreadyDone = 1;
-                    speakOut("the end is near, we had to stop");
+                   // speakOut("the end is near, we had to stop");
                 };
                 vibrator.vibrate(400);
                 toneG.startTone(ToneGenerator.TONE_CDMA_ANSWER, 200);
