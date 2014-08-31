@@ -36,22 +36,23 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="80dp"
             >
-    </LinearLayout>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            >
-        <ToggleButton
-                android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:text=""
-                android:textStyle="bold" android:textSize="60px"
-                android:textOff="FORWARD" android:textOn="STOP" android:background="@drawable/my_btn_toggle"
-                android:id="@+id/btnForward"/>
-            <Button
+        <TextView
+                android:layout_width="101dp"
+                android:layout_height="fill_parent"
+                android:text="x:100"
+                android:textSize="60px"
+                android:id="@+id/textView2"/>
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Use X Y"
+                android:id="@+id/checkBox"/>
+        <Space
+                android:layout_width="60dp"
+                android:layout_height="match_parent" />
+        <Button
                 android:layout_width="100dp"
                 android:layout_height="50dp"
                 android:text="Stop"
@@ -64,27 +65,16 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             >
+        <Space
+                android:layout_width="80dp"
+                android:layout_height="match_parent" />
         <ToggleButton
-                android:layout_width="100dp"
+                android:layout_width="160dp"
                 android:layout_height="50dp"
                 android:text=""
-
-                android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
-                android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
-                android:id="@+id/btnLeftForward"/>
-        <ToggleButton
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:text=""
-                android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
-                android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
-                android:id="@+id/btnRightFoward"/>
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:text="x:100"
-                android:textSize="60px"
-                android:id="@+id/textView2"/>
+                android:textStyle="bold" android:textSize="50px"
+                android:textOff="FORWARD" android:textOn="STOP" android:background="@drawable/my_btn_toggle"
+                android:id="@+id/btnForward"/>
 
     </LinearLayout>
     <LinearLayout
@@ -92,25 +82,61 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             >
+        <Button
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:text="Left"
+                android:id="@+id/btnLeft1"/>
         <ToggleButton
-                android:layout_width="100dp"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:text=""
+                android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
+                android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
+                android:id="@+id/btnLeftForward"/>
+        <ToggleButton
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:text=""
+                android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
+                android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
+                android:id="@+id/btnRightFoward"/>
+        <Button
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:text="Right"
+                android:id="@+id/btnRight1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            >
+        <Button
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:text="Left"
+                android:id="@+id/btnLeft2"/>
+        <ToggleButton
+                android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:text=""
                 android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
                 android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
                 android:id="@+id/btnLeftBackward"/>
         <ToggleButton
-                android:layout_width="100dp"
+                android:layout_width="80dp"
                 android:layout_height="50dp"
                 android:text=""
                 android:textColor="@color/toggle_color" android:textStyle="bold" android:textSize="60px"
                 android:textOff="-" android:textOn="ON" android:background="@drawable/my_btn_toggle"
                 android:id="@+id/btnRightBackward"/>
-        <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Use X Y"
-                android:id="@+id/checkBox"/>
+        <Button
+                android:layout_width="80dp"
+                android:layout_height="fill_parent"
+                android:text="Right"
+                android:id="@+id/btnRight2"/>
+
 
     </LinearLayout>
     <LinearLayout
@@ -118,34 +144,35 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             >
+        <Space
+                android:layout_width="80dp"
+                android:layout_height="match_parent" />
         <ToggleButton
-                android:layout_width="200dp"
+                android:layout_width="160dp"
                 android:layout_height="50dp"
                 android:text=""
-                android:textStyle="bold" android:textSize="60px"
+                android:textStyle="bold" android:textSize="50px"
                 android:textOff="BACKWARD" android:textOn="STOP" android:background="@drawable/my_btn_toggle"
                 android:id="@+id/btnBackward"/>
+
+                />
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="match_parent"
             >
         <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
                 android:text=""
                 android:id="@+id/serialReveicedText"/>
-    </LinearLayout>
-    <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.19">
         <Button
-                android:layout_width="100dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:text="Scan"
-                android:id="@+id/buttonScan" android:layout_weight="0.09"/>
+                android:layout_gravity="bottom|right"
+                android:id="@+id/buttonScan"/>
     </LinearLayout>
+
 </LinearLayout>

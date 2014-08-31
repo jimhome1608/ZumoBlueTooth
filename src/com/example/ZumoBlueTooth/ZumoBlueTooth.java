@@ -34,17 +34,19 @@ public class ZumoBlueTooth extends BlunoLibrary
         implements View.OnClickListener, SensorEventListener, TextToSpeech.OnInitListener  {
 
     static int upLeft = 0;
-    static String LED_OFF =         "0";
-    static String LED_ON =          "1";
-    static String LEFT_FORWARD =    "2";
-    static String LEFT_BACKWARD =   "3";
-    static String LEFT_STOP =       "4";
-    static String RIGHT_FORWARD =   "5";
-    static String RIGHT_BACKWARD =  "6";
-    static String RIGHT_STOP =      "7";
-    static String BOTH_FORWARD =    "8";
-    static String BOTH_BACKWARD =   "9";
-    static String BOTH_STOP =       "A";
+    static String LED_OFF =         "A";
+    static String LED_ON =          "B";
+    static String LEFT_FORWARD =    "C";
+    static String LEFT_BACKWARD =   "D";
+    static String LEFT_STOP =       "E";
+    static String RIGHT_FORWARD =   "F";
+    static String RIGHT_BACKWARD =  "G";
+    static String RIGHT_STOP =      "H";
+    static String BOTH_FORWARD =    "I";
+    static String BOTH_BACKWARD =   "J";
+    static String BOTH_STOP =       "K";
+    static String GO_LEFT =         "L";
+    static String GO_RIGHT =        "M";
 
     private static final int INVALID_POINTER_ID = -1;
 
@@ -69,6 +71,11 @@ public class ZumoBlueTooth extends BlunoLibrary
     private TextView textView2;
 
     private int AlreadyDone;
+
+    Button btnLeft1;
+    Button btnLeft2;
+    Button btnRight1;
+    Button btnRight2;
 
     ToggleButton btnLeftForward;
     ToggleButton btnLeftBackward;
@@ -192,7 +199,18 @@ public class ZumoBlueTooth extends BlunoLibrary
                     btnBackward.setChecked(false);
                 }
                 break;
-
+            case R.id.btnLeft1:
+                serialSend(GO_LEFT);
+                break;
+            case R.id.btnLeft2:
+                serialSend(GO_LEFT);
+                break;
+            case R.id.btnRight1:
+                serialSend(GO_RIGHT);
+                break;
+            case R.id.btnRight2:
+                serialSend(GO_RIGHT);
+                break;
         }
 
     }
@@ -229,6 +247,14 @@ public class ZumoBlueTooth extends BlunoLibrary
 
         buttonScan = (Button) findViewById(R.id.buttonScan);					//initial the button for scanning the BLE device
         buttonScan.setOnClickListener(this);
+        btnLeft1  = (Button) findViewById(R.id.btnLeft1);
+        btnLeft2  = (Button) findViewById(R.id.btnLeft2);
+        btnRight1  = (Button) findViewById(R.id.btnRight1);
+        btnRight2  = (Button) findViewById(R.id.btnRight2);
+        btnLeft1.setOnClickListener(this);
+        btnLeft2.setOnClickListener(this);
+        btnRight1.setOnClickListener(this);
+        btnRight2.setOnClickListener(this);
     }
 
 
@@ -314,9 +340,19 @@ public class ZumoBlueTooth extends BlunoLibrary
         float Gx = event.values[0];
         float Gy = event.values[1];
         float Gz = event.values[2];
-        textView2.setText("  x:"+ String.format("%.2f", Gx) +" "+ //String.format("%.2f", floatValue)  Float.toString(Gx)
-                " y:"+ String.format("%.2f", Gy) +"\n"+
-                "  z:"+ String.format("%.2f", Gz));
+        if ( Gz < 3) {
+            serialSend(LEFT_STOP);
+            serialSend(RIGHT_STOP);
+            btnLeftBackward.setChecked(false);
+            btnLeftForward.setChecked(false);
+            btnRightFoward.setChecked(false);
+            btnRightBackward.setChecked(false);
+            btnForward.setChecked(false);
+            btnBackward.setChecked(false);
+        }
+        textView2.setText("x:"+ String.format("%.2f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
+                "y:"+ String.format("%.2f", Gy) +"\n" +
+                "z:"+ String.format("%.2f", Gz));
         if (! checkBox.isChecked())
             return;
         if (Gy > 2)
@@ -414,8 +450,10 @@ public class ZumoBlueTooth extends BlunoLibrary
         }
     }
 
-    public  int scale(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
+    public  int scale( double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
         double _result;
+        if (valueIn < baseMin ) valueIn = baseMin;
+        if (valueIn > baseMax ) valueIn = baseMax;
         _result = ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
         return (int) Math.round(_result);
     }
@@ -436,7 +474,6 @@ public class ZumoBlueTooth extends BlunoLibrary
 
     @Override
     public void onSerialReceived(String theString) {							//Once connection data received, this function will be called
-        // TODO Auto-generated method stub
         strReadData = strReadData+theString;
         Integer _Pos = strReadData.indexOf('}');
         if ( _Pos>= 0 ) {
@@ -445,17 +482,22 @@ public class ZumoBlueTooth extends BlunoLibrary
             String strMessage = new String();
             strMessage = strReadData.substring(0,_Pos);
             Log.d("DATA",strMessage);
-            serialReceivedText.setText(strMessage+"\n"+serialReceivedText.getText());
+            strReadData = "";
             String[] separated = strMessage.split(",");
             for (int i=0; i<separated.length;i++ ) {
                 if (isNumeric(separated[i])) {
                     double d =  Double.parseDouble(separated[i]);
                     int _red = 255- scale(d,0,2000,0,255);
                     int _color = Color.argb(255,_red,0,0);
-                    iv[i].setBackgroundColor(_color);
+                    if (i < 6)  iv[i].setBackgroundColor(_color);
                 }
             }
-            strReadData = "";
+
+            if (separated.length > 4) {
+                return; // is numbers from sensors
+            }
+
+            serialReceivedText.setText(strMessage+"\n"+serialReceivedText.getText());
             if (strMessage.indexOf('z') >=0) {
                 btnLeftBackward.setChecked(false);
                 btnLeftForward.setChecked(false);
