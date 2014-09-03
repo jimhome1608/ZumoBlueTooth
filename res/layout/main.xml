@@ -154,8 +154,6 @@
                 android:textStyle="bold" android:textSize="50px"
                 android:textOff="BACKWARD" android:textOn="STOP" android:background="@drawable/my_btn_toggle"
                 android:id="@+id/btnBackward"/>
-
-                />
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"

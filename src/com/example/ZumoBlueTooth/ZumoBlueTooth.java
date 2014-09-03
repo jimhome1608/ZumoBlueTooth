@@ -72,6 +72,8 @@ public class ZumoBlueTooth extends BlunoLibrary
 
     private int AlreadyDone;
 
+    NumberPicker numberPicker;
+
     Button btnLeft1;
     Button btnLeft2;
     Button btnRight1;
@@ -90,6 +92,9 @@ public class ZumoBlueTooth extends BlunoLibrary
 
     String strReadData  = new String();
     String  EventFlag = new String();
+    String strSpeed = new String("2");
+    String strLAST_SENT = new String();
+    int intSpeed = 2;
 
     private SensorManager mSensorManager;
     private Sensor mGyroSensor;
@@ -99,15 +104,52 @@ public class ZumoBlueTooth extends BlunoLibrary
     ImageView iv[] = new ImageView[6];
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        super.onKeyDown(keyCode, event);
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
+        {
+            intSpeed = intSpeed-1;
+            if (intSpeed < 1)
+                intSpeed = 1;
+            strSpeed = Integer.toString(intSpeed);
+            serialReceivedText.setText(">Speed:"+Integer.toString(intSpeed*10)+"%\n"+serialReceivedText.getText());
+            serialSend(strLAST_SENT+strSpeed);
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP)
+        {
+            intSpeed = intSpeed+1;
+            if (intSpeed > 9)
+                intSpeed = 10;
+            if (intSpeed ==10)
+                strSpeed = Integer.toString(0);
+            else
+               strSpeed = Integer.toString(intSpeed);
+            serialSend(strLAST_SENT+strSpeed);
+            serialReceivedText.setText(">Speed:"+Integer.toString(intSpeed*10)+"%\n"+serialReceivedText.getText());
+            return true;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) { //this is just to kill the default beep sound
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP) || (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)) {
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+       }
+
+
+    @Override
     public void onClick(View v) {
-        // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.buttonScan:
                 buttonScanOnClickProcess();
                 break;
             case R.id.btnStop:
-                serialSend(LEFT_STOP);
-                serialSend(RIGHT_STOP);
+                serialSend(BOTH_STOP+strSpeed);
+                strLAST_SENT = BOTH_STOP;
                 btnLeftBackward.setChecked(false);
                 btnLeftForward.setChecked(false);
                 btnRightFoward.setChecked(false);
@@ -117,8 +159,8 @@ public class ZumoBlueTooth extends BlunoLibrary
                 break;
             case R.id.btnBackward:
                 if (btnBackward.isChecked()) {
-                    serialSend(RIGHT_BACKWARD);
-                    serialSend(LEFT_BACKWARD);
+                    serialSend(BOTH_BACKWARD+strSpeed);
+                    strLAST_SENT = BOTH_BACKWARD;
                     btnLeftBackward.setChecked(true);
                     btnLeftForward.setChecked(false);
                     btnRightFoward.setChecked(false);
@@ -126,8 +168,8 @@ public class ZumoBlueTooth extends BlunoLibrary
                     btnForward.setChecked(false);
                 }
                 else {
-                    serialSend(LEFT_STOP);
-                    serialSend(RIGHT_STOP);
+                    serialSend(BOTH_STOP+strSpeed);
+                    strLAST_SENT = BOTH_STOP;
                     btnLeftBackward.setChecked(false);
                     btnLeftForward.setChecked(false);
                     btnRightFoward.setChecked(false);
@@ -137,8 +179,8 @@ public class ZumoBlueTooth extends BlunoLibrary
                 break;
             case R.id.btnForward:
                 if (btnForward.isChecked()) {
-                    serialSend(RIGHT_FORWARD);
-                    serialSend(LEFT_FORWARD);
+                    serialSend(BOTH_FORWARD+strSpeed);
+                    strLAST_SENT = BOTH_FORWARD;
                     btnLeftBackward.setChecked(false);
                     btnLeftForward.setChecked(true);
                     btnRightFoward.setChecked(true);
@@ -146,8 +188,8 @@ public class ZumoBlueTooth extends BlunoLibrary
                     btnBackward.setChecked(false);
                 }
                 else {
-                    serialSend(LEFT_STOP);
-                    serialSend(RIGHT_STOP);
+                    serialSend(BOTH_STOP+strSpeed);
+                    strLAST_SENT = BOTH_STOP;
                     btnLeftBackward.setChecked(false);
                     btnLeftForward.setChecked(false);
                     btnRightFoward.setChecked(false);
@@ -157,59 +199,71 @@ public class ZumoBlueTooth extends BlunoLibrary
                 break;
             case R.id.btnLeftForward:
                 if (btnLeftForward.isChecked()) {
-                    serialSend(LEFT_FORWARD);
+                    serialSend(LEFT_FORWARD+strSpeed);
+                    strLAST_SENT = LEFT_FORWARD;
                     btnLeftBackward.setChecked(false);
                 }
                 else {
-                    serialSend(LEFT_STOP);
+                    serialSend(LEFT_STOP+strSpeed);
+                    strLAST_SENT = LEFT_STOP;
                     btnForward.setChecked(false);
                     btnBackward.setChecked(false);
                 }
                 break;
             case R.id.btnLeftBackward:
                 if (btnLeftBackward.isChecked()) {
-                    serialSend(LEFT_BACKWARD);
+                    serialSend(LEFT_BACKWARD+strSpeed);
+                    strLAST_SENT = LEFT_BACKWARD;
                     btnLeftForward.setChecked(false);
                 }
                 else {
-                    serialSend(LEFT_STOP);
+                    serialSend(LEFT_STOP+strSpeed);
+                    strLAST_SENT = LEFT_STOP;
                     btnForward.setChecked(false);
                     btnBackward.setChecked(false);
                 }
                 break;
             case R.id.btnRightFoward:
                 if (btnRightFoward.isChecked()) {
-                    serialSend(RIGHT_FORWARD);
+                    serialSend(RIGHT_FORWARD+strSpeed);
+                    strLAST_SENT = RIGHT_FORWARD;
                     btnRightBackward.setChecked(false);
                 }
                 else {
-                    serialSend(RIGHT_STOP);
+                    serialSend(RIGHT_STOP+strSpeed);
+                    strLAST_SENT = RIGHT_STOP;
                     btnForward.setChecked(false);
                     btnBackward.setChecked(false);
                 }
                 break;
             case R.id.btnRightBackward:
                 if (btnRightBackward.isChecked()) {
-                    serialSend(RIGHT_BACKWARD);
+                    serialSend(RIGHT_BACKWARD+strSpeed);
+                    strLAST_SENT = RIGHT_BACKWARD;
                     btnRightFoward.setChecked(false);
                 }
                 else{
-                    serialSend(RIGHT_STOP);
+                    serialSend(RIGHT_STOP+strSpeed);
+                    strLAST_SENT = RIGHT_STOP;
                     btnForward.setChecked(false);
                     btnBackward.setChecked(false);
                 }
                 break;
             case R.id.btnLeft1:
-                serialSend(GO_LEFT);
+                serialSend(GO_LEFT+strSpeed);
+                strLAST_SENT = GO_LEFT;
                 break;
             case R.id.btnLeft2:
-                serialSend(GO_LEFT);
+                serialSend(GO_LEFT+strSpeed);
+                strLAST_SENT = GO_LEFT;
                 break;
             case R.id.btnRight1:
-                serialSend(GO_RIGHT);
+                serialSend(GO_RIGHT+strSpeed);
+                strLAST_SENT = GO_RIGHT;
                 break;
             case R.id.btnRight2:
-                serialSend(GO_RIGHT);
+                serialSend(GO_RIGHT+strSpeed);
+                strLAST_SENT = GO_RIGHT;
                 break;
         }
 
@@ -255,6 +309,9 @@ public class ZumoBlueTooth extends BlunoLibrary
         btnLeft2.setOnClickListener(this);
         btnRight1.setOnClickListener(this);
         btnRight2.setOnClickListener(this);
+        serialReceivedText.setText(">Speed:"+Integer.toString(intSpeed*10)+"%\n");
+        serialReceivedText.setText("Use Volume Buttons to change speed\n"+serialReceivedText.getText());
+        serialReceivedText.setText("Tilt 90 degress to stop\n"+serialReceivedText.getText());
     }
 
 
@@ -350,9 +407,9 @@ public class ZumoBlueTooth extends BlunoLibrary
             btnForward.setChecked(false);
             btnBackward.setChecked(false);
         }
-        textView2.setText("x:"+ String.format("%.2f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
-                "y:"+ String.format("%.2f", Gy) +"\n" +
-                "z:"+ String.format("%.2f", Gz));
+        textView2.setText("x:"+ String.format("%.1f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
+                "y:"+ String.format("%.1f", Gy) +"\n" +
+                "z:"+ String.format("%.1f", Gz));
         if (! checkBox.isChecked())
             return;
         if (Gy > 2)
@@ -372,34 +429,31 @@ public class ZumoBlueTooth extends BlunoLibrary
         if ( NewEventFlag != EventFlag){
             EventFlag = NewEventFlag;
             if (EventFlag == "BACK") {
-                serialSend(RIGHT_BACKWARD);
-                serialSend(LEFT_BACKWARD);
+                serialSend(BOTH_BACKWARD+strSpeed);
             }
             if (EventFlag == "FORWARD") {
-                serialSend(RIGHT_FORWARD);
-                serialSend(LEFT_FORWARD);
+                serialSend(BOTH_FORWARD+strSpeed);
             }
             if (EventFlag == "STOP") {
-                serialSend(RIGHT_STOP);
-                serialSend(LEFT_STOP);
+                serialSend(BOTH_STOP+strSpeed);
             }
             ;
             if (EventFlag == "HALF_RIGHT") {
-                serialSend(LEFT_STOP);
+                serialSend(LEFT_STOP+strSpeed);
             }
             ;
             if (EventFlag == "HALF_LEFT") {
-                serialSend(RIGHT_STOP);
+                serialSend(RIGHT_STOP+strSpeed);
             }
             ;
             if (EventFlag == "FULL_RIGHT") {
-                serialSend(RIGHT_FORWARD);
-                serialSend(LEFT_BACKWARD);
+                serialSend(RIGHT_FORWARD+strSpeed);
+                serialSend(LEFT_BACKWARD+strSpeed);
             }
             ;
             if (EventFlag == "FULL_LEFT") {
-                serialSend(RIGHT_BACKWARD);
-                serialSend(LEFT_FORWARD);
+                serialSend(RIGHT_BACKWARD+strSpeed);
+                serialSend(LEFT_FORWARD+strSpeed);
             }
         }
     }
@@ -497,7 +551,7 @@ public class ZumoBlueTooth extends BlunoLibrary
                 return; // is numbers from sensors
             }
 
-            serialReceivedText.setText(strMessage+"\n"+serialReceivedText.getText());
+            serialReceivedText.setText(strMessage.replace("z ", ">")+"\n"+serialReceivedText.getText());
             if (strMessage.indexOf('z') >=0) {
                 btnLeftBackward.setChecked(false);
                 btnLeftForward.setChecked(false);
