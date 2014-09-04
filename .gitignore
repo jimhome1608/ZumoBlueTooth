@@ -1,3 +1,6 @@
+bin/
+out/
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -7,6 +10,8 @@ Desktop.ini
 
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+#JAVA BINARY Files
+*.class
 
 # Windows Installer files
 *.cab

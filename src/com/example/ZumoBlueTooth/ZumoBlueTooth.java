@@ -48,6 +48,9 @@ public class ZumoBlueTooth extends BlunoLibrary
     static String GO_LEFT =         "L";
     static String GO_RIGHT =        "M";
 
+    int ySpeedPrevious = 0;
+    int xSpeedPrevious = 0;
+
     private static final int INVALID_POINTER_ID = -1;
 
     private int ContentId = 0;
@@ -381,7 +384,8 @@ public class ZumoBlueTooth extends BlunoLibrary
     @Override
     public final void onSensorChanged(SensorEvent event) {
         final int type = event.sensor.getType();
-
+        int ySpeed = 0;
+        int xSpeed = 0;
         String NewEventFlag = new String();
         NewEventFlag = "";
        /* if(type==Sensor.TYPE_LIGHT) {
@@ -397,7 +401,7 @@ public class ZumoBlueTooth extends BlunoLibrary
         float Gx = event.values[0];
         float Gy = event.values[1];
         float Gz = event.values[2];
-        if ( Gz < 3) {
+        if ( Gz < 0) {
             serialSend(LEFT_STOP);
             serialSend(RIGHT_STOP);
             btnLeftBackward.setChecked(false);
@@ -406,55 +410,37 @@ public class ZumoBlueTooth extends BlunoLibrary
             btnRightBackward.setChecked(false);
             btnForward.setChecked(false);
             btnBackward.setChecked(false);
+            return;
         }
+        ySpeed = 0-Math.round(Gy);
+        xSpeed = Math.round(Gx);
         textView2.setText("x:"+ String.format("%.1f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
                 "y:"+ String.format("%.1f", Gy) +"\n" +
                 "z:"+ String.format("%.1f", Gz));
         if (! checkBox.isChecked())
             return;
-        if (Gy > 2)
-            NewEventFlag = "BACK";
-        if (Gy < -2)
-            NewEventFlag = "FORWARD";
-        if (Math.abs(Gy) < 2)
-            NewEventFlag = "STOP";
-        if (Gx > 2)
-            NewEventFlag = "HALF_RIGHT";
-        if (Gx <  -2)
-            NewEventFlag = "HALF_LEFT";
-        if (Gx <  -5)
-            NewEventFlag = "FULL_LEFT";
-        if (Gx > 5)
-            NewEventFlag = "FULL_RIGHT";
-        if ( NewEventFlag != EventFlag){
-            EventFlag = NewEventFlag;
-            if (EventFlag == "BACK") {
-                serialSend(BOTH_BACKWARD+strSpeed);
-            }
-            if (EventFlag == "FORWARD") {
-                serialSend(BOTH_FORWARD+strSpeed);
-            }
-            if (EventFlag == "STOP") {
-                serialSend(BOTH_STOP+strSpeed);
-            }
-            ;
-            if (EventFlag == "HALF_RIGHT") {
-                serialSend(LEFT_STOP+strSpeed);
-            }
-            ;
-            if (EventFlag == "HALF_LEFT") {
-                serialSend(RIGHT_STOP+strSpeed);
-            }
-            ;
-            if (EventFlag == "FULL_RIGHT") {
-                serialSend(RIGHT_FORWARD+strSpeed);
-                serialSend(LEFT_BACKWARD+strSpeed);
-            }
-            ;
-            if (EventFlag == "FULL_LEFT") {
-                serialSend(RIGHT_BACKWARD+strSpeed);
-                serialSend(LEFT_FORWARD+strSpeed);
-            }
+        if (ySpeed == ySpeedPrevious && xSpeed == xSpeedPrevious)
+            return;
+        ySpeedPrevious = ySpeed;
+        xSpeedPrevious = xSpeed;
+
+        if (ySpeed > 0) {
+            if (xSpeed >= -4) {
+                serialSend(RIGHT_STOP +"0");
+                serialSend(LEFT_FORWARD + Integer.toString(ySpeed));
+                return;
+            };
+            if (xSpeed <= 4) {
+                serialSend(LEFT_STOP +"0");
+                serialSend(RIGHT_FORWARD + Integer.toString(ySpeed));
+                return;
+            };
+            xSpeed = ySpeed;
+            if (xSpeed != 0 )
+               xSpeed = ySpeed/xSpeed;
+            serialSend(LEFT_FORWARD + Integer.toString(xSpeed));
+            serialSend(RIGHT_FORWARD + Integer.toString(ySpeed));
+            return;
         }
     }
 
