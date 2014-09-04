@@ -423,7 +423,7 @@ public class ZumoBlueTooth extends BlunoLibrary
             return;
         ySpeedPrevious = ySpeed;
         xSpeedPrevious = xSpeed;
-
+        
         if (ySpeed > 0) {
             if (xSpeed >= -4) {
                 serialSend(RIGHT_STOP +"0");
