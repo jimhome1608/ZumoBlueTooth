@@ -443,12 +443,12 @@ public class ZumoBlueTooth extends BlunoLibrary
             serialSend(BOTH_STOP +"0");
             return;
         }
-        if (y > 0) {
+        if (y < 0) {
             serialSend(LEFT_FORWARD + Integer.toString(leftMotorSpeed));
             serialSend(RIGHT_FORWARD + Integer.toString(righMotorSpeed));
             return;
         }
-        if (y < 0) {
+        if (y > 0) {
             serialSend(LEFT_BACKWARD + Integer.toString(leftMotorSpeed));
             serialSend(RIGHT_BACKWARD + Integer.toString(righMotorSpeed));
             return;
