@@ -48,8 +48,8 @@ public class ZumoBlueTooth extends BlunoLibrary
     static String GO_LEFT =         "L";
     static String GO_RIGHT =        "M";
 
-    int ySpeedPrevious = 0;
-    int xSpeedPrevious = 0;
+    int yBefore = 0;
+    int xBefore = 0;
 
     private static final int INVALID_POINTER_ID = -1;
 
@@ -112,8 +112,8 @@ public class ZumoBlueTooth extends BlunoLibrary
         if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
         {
             intSpeed = intSpeed-1;
-            if (intSpeed < 1)
-                intSpeed = 1;
+            if (intSpeed < 0)
+                intSpeed = 0;
             strSpeed = Integer.toString(intSpeed);
             serialReceivedText.setText(">Speed:"+Integer.toString(intSpeed*10)+"%\n"+serialReceivedText.getText());
             serialSend(strLAST_SENT+strSpeed);
@@ -123,11 +123,8 @@ public class ZumoBlueTooth extends BlunoLibrary
         {
             intSpeed = intSpeed+1;
             if (intSpeed > 9)
-                intSpeed = 10;
-            if (intSpeed ==10)
-                strSpeed = Integer.toString(0);
-            else
-               strSpeed = Integer.toString(intSpeed);
+                intSpeed = 9;
+            strSpeed = Integer.toString(intSpeed);
             serialSend(strLAST_SENT+strSpeed);
             serialReceivedText.setText(">Speed:"+Integer.toString(intSpeed*10)+"%\n"+serialReceivedText.getText());
             return true;
@@ -384,8 +381,10 @@ public class ZumoBlueTooth extends BlunoLibrary
     @Override
     public final void onSensorChanged(SensorEvent event) {
         final int type = event.sensor.getType();
-        int ySpeed = 0;
-        int xSpeed = 0;
+        int y = 0;
+        int x = 0;
+        int leftMotorSpeed = 0;
+        int righMotorSpeed = 0;
         String NewEventFlag = new String();
         NewEventFlag = "";
        /* if(type==Sensor.TYPE_LIGHT) {
@@ -412,34 +411,46 @@ public class ZumoBlueTooth extends BlunoLibrary
             btnBackward.setChecked(false);
             return;
         }
-        ySpeed = 0-Math.round(Gy);
-        xSpeed = Math.round(Gx);
-        textView2.setText("x:"+ String.format("%.1f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
+        y = (int)Gy*2;
+        x = (int)Gx;
+        leftMotorSpeed = 0;
+        righMotorSpeed = 0;
+        if (x < 0)
+            leftMotorSpeed = Math.abs(x);
+        if (x > 0 )
+            righMotorSpeed = Math.abs(x);
+        for (int i=0;i<Math.abs(y);i++) {
+            leftMotorSpeed++;
+            righMotorSpeed++;
+            if ((righMotorSpeed > 9) || (leftMotorSpeed > 9)  ) {
+                righMotorSpeed --;
+                leftMotorSpeed--;
+                break;
+            }
+        }
+        textView2.setText("x:"+ String.format("%.1f", Gx) +"  y:"+ String.format("%.1f", Gy) + " z:"+ String.format("%.1f", Gz)+"\n" +
+                "left M:"+ String.format("%d", leftMotorSpeed)+" right M:"+ String.format("%d",righMotorSpeed) );
+        /*textView2.setText("x:"+ String.format("%.1f", Gx) +"\n" + //String.format("%.2f", floatValue)  Float.toString(Gx)
                 "y:"+ String.format("%.1f", Gy) +"\n" +
-                "z:"+ String.format("%.1f", Gz));
+                "z:"+ String.format("%.1f", Gz));*/
         if (! checkBox.isChecked())
             return;
-        if (ySpeed == ySpeedPrevious && xSpeed == xSpeedPrevious)
+        if (y == yBefore && x == xBefore)
             return;
-        ySpeedPrevious = ySpeed;
-        xSpeedPrevious = xSpeed;
-        
-        if (ySpeed > 0) {
-            if (xSpeed >= -4) {
-                serialSend(RIGHT_STOP +"0");
-                serialSend(LEFT_FORWARD + Integer.toString(ySpeed));
-                return;
-            };
-            if (xSpeed <= 4) {
-                serialSend(LEFT_STOP +"0");
-                serialSend(RIGHT_FORWARD + Integer.toString(ySpeed));
-                return;
-            };
-            xSpeed = ySpeed;
-            if (xSpeed != 0 )
-               xSpeed = ySpeed/xSpeed;
-            serialSend(LEFT_FORWARD + Integer.toString(xSpeed));
-            serialSend(RIGHT_FORWARD + Integer.toString(ySpeed));
+        yBefore = y;
+        xBefore = x;
+        if ((righMotorSpeed ==0) && (leftMotorSpeed ==0) ) {
+            serialSend(BOTH_STOP +"0");
+            return;
+        }
+        if (y > 0) {
+            serialSend(LEFT_FORWARD + Integer.toString(leftMotorSpeed));
+            serialSend(RIGHT_FORWARD + Integer.toString(righMotorSpeed));
+            return;
+        }
+        if (y < 0) {
+            serialSend(LEFT_BACKWARD + Integer.toString(leftMotorSpeed));
+            serialSend(RIGHT_BACKWARD + Integer.toString(righMotorSpeed));
             return;
         }
     }

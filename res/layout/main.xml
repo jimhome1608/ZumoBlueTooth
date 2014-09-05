@@ -37,21 +37,14 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            >
+            android:weightSum="1">
         <TextView
                 android:layout_width="101dp"
                 android:layout_height="fill_parent"
                 android:text="x:100"
                 android:textSize="60px"
-                android:id="@+id/textView2"/>
-        <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Use X Y"
-                android:id="@+id/checkBox"/>
-        <Space
-                android:layout_width="60dp"
-                android:layout_height="match_parent" />
+                android:id="@+id/textView2" android:layout_weight="0.98"/>
+
         <Button
                 android:layout_width="100dp"
                 android:layout_height="50dp"
@@ -165,12 +158,26 @@
                 android:layout_height="match_parent"
                 android:text=""
                 android:id="@+id/serialReveicedText"/>
-        <Button
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:text="Scan"
-                android:layout_gravity="bottom|right"
-                android:id="@+id/buttonScan"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+            <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp" />
+            <CheckBox
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Use X Y"
+                    android:id="@+id/checkBox"/>
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Scan"
+                    android:layout_gravity="bottom|right"
+                    android:id="@+id/buttonScan"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
